@@ -39,6 +39,11 @@ void printSequence(const T& sequence)
 
 std::vector<std::vector<int>> buildSparseTable(const std::vector<int>& array)
 {
+    //bc 1 3 4 8 6 1 4 2
+    //l1 1 3 4 6 1 1 2
+    //l2 1 3 4 1 1 1
+    //l4 1 3 1 1 1
+    //l8 1 
     std::vector<std::vector<int>> res;
 
     int size = (int)array.size();
@@ -52,6 +57,10 @@ std::vector<std::vector<int>> buildSparseTable(const std::vector<int>& array)
     for (int power = 0; power <= maxpower; power++)
     {
         int step = 1 << power;
+        std::cout << "Step " << step << endl;
+        std::cout << "Previous minimum is ";
+        printSequence(res.back());
+        std::cout << endl;
     }
 
     return res;
