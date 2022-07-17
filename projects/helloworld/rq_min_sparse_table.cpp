@@ -73,6 +73,18 @@ std::vector<std::vector<int>> buildSparseTable(const std::vector<int>& array)
         while (rightInd < size)
         {
             std::cout << "Considering pair " << leftInd << " " << rightInd << endl;
+            int minimum = 0;
+            //
+            if (res.size() == 1)
+                minimum = array[leftInd];
+            else
+            {
+                //
+                int hafu = leftInd + step / 2;
+                //
+                minimum = std::min(res[res.size() - 2][leftInd], res[res.size() - 2][hafu]);
+            }
+            res.back().push_back(minimum);
             leftInd++;
             rightInd++;
         }
