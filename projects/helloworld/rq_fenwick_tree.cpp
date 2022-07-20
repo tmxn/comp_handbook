@@ -53,6 +53,11 @@ int largestPowerOfTwoThatDividesN(int n)
     return n & (~(n - 1)); 
 }
 
+void fenwickTreeAdd(int index, int value)
+{
+
+}
+
 //Builds a fenwick tree from a given array of values
 std::vector<int> buildFenwickTree(const std::vector<int>& array)
 {
