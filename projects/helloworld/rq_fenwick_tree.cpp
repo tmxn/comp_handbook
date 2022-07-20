@@ -38,15 +38,14 @@ void printSequence(const T& sequence)
     std::cout << "} ";
 }
 
-int rangeMinimumQueryDumb(const std::vector<int>& array, int from, int to)
+int rangeSumQueryDumb(const std::vector<int>& array, int from, int to)
 {
-    int minimum = std::numeric_limits<int>::max();
+    int result = 0;
     for (int i = from; i <= to; i++)
     {
-        if (minimum > array[i])
-            minimum = array[i];
+        result += array[from];
     }
-    return minimum;
+    return result;
 }
 
 int largestPowerOfTwoThatDividesN(int n)
@@ -54,7 +53,19 @@ int largestPowerOfTwoThatDividesN(int n)
     return n & (~(n - 1)); 
 }
 
-int rangeMinimumQuerySmart(const std::vector<int>& array, int from, int to)
+//Builds a fenwick tree from a given array of values
+std::vector<int> buildFenwickTree(const std::vector<int>& array)
+{
+    std::vector<int> res;
+    
+    //Tree[k] = rangeSum(k-p(k) + 1, k)
+    //Each element in the tree-array stores a sum from index k-p(k)+1 up to k
+    //Numbers that are powers of two store the longest ranges. Odd numbers store just 1 sum
+    
+    return res;
+}
+
+int rangeSumQuerySmart(const std::vector<int>& fenwickTree, int from, int to)
 {
     return 0;
 }
@@ -62,6 +73,7 @@ int rangeMinimumQuerySmart(const std::vector<int>& array, int from, int to)
 int main()
 {
     std::cout << "largest power of two that divides 48 is " << largestPowerOfTwoThatDividesN(48) << endl;
+    std::cout << "largest power of two that divides 6 is " << largestPowerOfTwoThatDividesN(6) << endl;
     std::vector<int> items = {1, 3, 4, 8, 6, 1, 4, 2};
     
 
@@ -94,8 +106,8 @@ int main()
             int rFrom = indexDistr(gen);
             int rTo = indexDistr(gen);
             if (rTo < rFrom) std::swap(rFrom, rTo);
-            int minTrue = rangeMinimumQueryDumb(items, rFrom, rTo);
-            int minTest = rangeMinimumQuerySmart(items, rFrom, rTo);
+            int minTrue = rangeSumQueryDumb(items, rFrom, rTo);
+            int minTest = rangeSumQuerySmart(items, rFrom, rTo);
             if (minTrue != minTest)
             {
                 std::cout << "Failed test ";
