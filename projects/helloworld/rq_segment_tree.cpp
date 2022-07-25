@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
-#include <string>
 #include <queue>
 #include <random>
 
@@ -48,6 +47,7 @@ int rangeSumQueryDumb(const std::vector<int>& array, int from, int to)
     return result;
 }
 
+//Largest power of two that divides N
 int p2tdn(int v)
 {
     return v & (~(v - 1));
@@ -76,6 +76,10 @@ std::vector<int> buildSegmentTreeSum(const std::vector<int>& array)
     return res;
 }
 
+int calcSum(const std::vector<int>& segmentTree, int fromIndex, int toIndex)
+{
+   return 0; 
+}
 int main()
 {
     //Segment tree Tree representation using a 1D array:
@@ -108,7 +112,8 @@ int main()
         for (auto & it : items)
             it = distr(gen);
 
-        //Make a bunch of queries        for (int mq = 0; mq < 100; mq++)
+        //Make a bunch of queries        
+	for (int mq = 0; mq < 100; mq++)
         {
             //Generate random from - to
             int rFrom = indexDistr(gen);
