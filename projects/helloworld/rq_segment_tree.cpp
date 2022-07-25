@@ -48,9 +48,32 @@ int rangeSumQueryDumb(const std::vector<int>& array, int from, int to)
     return result;
 }
 
-int largestPowerOfTwoThatDividesN(int n)
+int p2tdn(int v)
 {
-    return n & (~(n - 1)); 
+    return v & (~(v - 1));
+}
+
+//Given an array of size N, builds a segment tree of size 2N, where first N elements are the tree
+//Note that the output array will be padded with zeroes if the input array length is not a power of two
+//The array will always have a power of two length. Data items start at index = length/2;
+std::vector<int> buildSegmentTreeSum(const std::vector<int>& array)
+{
+    int osize = array.size();
+    int osizeR = 1 << (int)(floor(log2(osize)) + (p2tdn(osize) == osize ? 0 : 1));
+    std::cout << "osize is " << osize << " while osizeR is " << osizeR << endl;
+    std::vector<int> res(osizeR * 2, 0);
+    for (int i = 0; i < osizeR; i++)
+    {
+        int si = (i + osizeR);
+        while (si >= 1)
+        {
+            //add value to the current tree index (start from the leafs)
+            res[si] += i < array.size() ? array[i] : 0;
+            //go up the treee
+            si = si / 2;
+        }
+    }
+    return res;
 }
 
 int main()
@@ -58,6 +81,10 @@ int main()
     //Segment tree Tree representation using a 1D array:
     //1 -> 2,3  2 -> 4,5  3 -> 6,7  4 -> 8,9  5 -> 10,11  6 -> 12,13  7 -> 14, 15 ...
     std::vector<int> array = {5, 8, 6, 3, 2, 7, 2, 6};
+    //std::vector<int> array = {5, 8, 6};
+    
+    printSequence(buildSegmentTreeSum(array));
+    
     //~~~Randomized test~~~
     std::cout << "Perform a randomized full test ? (y/n)\n";
 
