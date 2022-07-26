@@ -60,7 +60,7 @@ std::vector<int> buildSegmentTreeSum(const std::vector<int>& array)
 {
     int osize = array.size();
     int osizeR = 1 << (int)(floor(log2(osize)) + (p2tdn(osize) == osize ? 0 : 1));
-    std::cout << "osize is " << osize << " while osizeR is " << osizeR << endl;
+    //std::cout << "osize is " << osize << " while osizeR is " << osizeR << endl;
     std::vector<int> res(osizeR * 2, 0);
     for (int i = 0; i < osizeR; i++)
     {
@@ -78,7 +78,20 @@ std::vector<int> buildSegmentTreeSum(const std::vector<int>& array)
 
 int calcSum(const std::vector<int>& segmentTree, int fromIndex, int toIndex)
 {
-   return 0; 
+    int n = segmentTree.size() / 2;
+    //std::cout << "N is " << n << endl;
+    int l = fromIndex + n;
+    int r = toIndex + n;
+    int s = 0;
+    
+    while (l <= r)
+    {
+        if (l % 2 == 1) s+=segmentTree[l++];
+        if (r % 2 == 0) s+=segmentTree[r--];
+        l /= 2;
+        r /= 2;
+    }
+    return s; 
 }
 int main()
 {
@@ -86,6 +99,21 @@ int main()
     //1 -> 2,3  2 -> 4,5  3 -> 6,7  4 -> 8,9  5 -> 10,11  6 -> 12,13  7 -> 14, 15 ...
     std::vector<int> array = {5, 8, 6, 3, 2, 7, 2, 6};
     //std::vector<int> array = {5, 8, 6};
+    
+    std::cout << "Sum " << calcSum(buildSegmentTreeSum(array), 1, 3) << endl;
+    
+    int n = 2, k = 3, f = 7, z = 1;
+    std::cout << "Division test " << endl << 
+    "2 / 2 = " << n / 2 << endl <<
+    "3 / 2 = " << k / 2 << endl <<
+    "7 / 2 = " << f / 2 << endl <<
+    "1 / 2 = " << z / 2 << endl;
+    
+    std::cout << "Modulo test " << endl << 
+    "2 % 2 = " << n % 2 << endl <<
+    "3 % 2 = " << k % 2 << endl <<
+    "7 % 2 = " << f % 2 << endl <<
+    "1 % 2 = " << z % 2 << endl;
     
     printSequence(buildSegmentTreeSum(array));
     
