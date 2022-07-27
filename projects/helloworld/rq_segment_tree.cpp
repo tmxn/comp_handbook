@@ -22,7 +22,7 @@ void dbgprint(bool debug, const T& entries)
         {
             std::cout << it.first << "-" << it.second << " ";
         }
-        std::cout << "}";
+        std::cout << "}\n";
     }
 }
 
@@ -34,7 +34,7 @@ void printSequence(const T& sequence)
     {   
         std::cout << it << " ";
     }
-    std::cout << "} ";
+    std::cout << "}\n";
 }
 
 int rangeSumQueryDumb(const std::vector<int>& array, int from, int to)
@@ -86,6 +86,11 @@ int calcSum(const std::vector<int>& segmentTree, int fromIndex, int toIndex)
     
     while (l <= r)
     {
+        //Include values in the sum if they're outside the 'normal' range
+        //Normal range means left is even and right is odd. Therefore we don't have to include the value into the sum and just go up one level
+        //So when values are not normal - ie if left is odd and right is even - we include them manually into the sum
+        //The other trick is that when a 'normal' range eventually collapses to having both indexes being equal, we will automatically include it into the sum:
+        //Both indexes being equal means that at least one of them is even or odd when it 'shouldn't' be
         if (l % 2 == 1) s+=segmentTree[l++];
         if (r % 2 == 0) s+=segmentTree[r--];
         l /= 2;
@@ -93,6 +98,61 @@ int calcSum(const std::vector<int>& segmentTree, int fromIndex, int toIndex)
     }
     return s; 
 }
+
+void addValueToSegmentTreeSum(std::vector<int>& segmentTree, int index, int value)
+{
+    int n = segmentTree.size() / 2;
+    int ind = index + n;
+    while (ind >= 1)
+    {
+        segmentTree[ind] += value;
+        ind /= 2;
+    }
+}
+
+std::vector<int> buildSegmentTreeMin(const std::vector<int>& array)
+{
+    int osize = array.size();
+    int size = 1 << ((int)floor(log2(osize)) + (p2tdn(osize) == osize ? 0 : 1));
+
+    //The tree initially stores maximum values
+    std::vector<int> res(size * 2, std::numeric_limits<int>::max());
+
+    //Fill the tree
+    for (int i = 0; i < size; i++)
+    {
+        int si = i + size;
+        while (si >= 1)
+        {
+            res[si] = i < size ? std::min(res[si], array[i]) : 0;
+            si = si / 2;
+        }
+    }
+
+    return res;
+}
+
+int queryRangeMinimumSegmentTree(const std::vector<int>& segmentTree, int from, int to)
+{
+    int size = segmentTree.size();
+    int asize = size / 2;
+
+    from += asize;
+    to += asize;
+
+    int ans = std::numeric_limits<int>::max();
+    while (from <= to)
+    {
+        if (from % 2 == 1) ans = std::min(ans, segmentTree[from++]);
+        if (to % 2 == 0) ans = std::min(ans, segmentTree[to--]);
+
+        from /= 2;
+        to /= 2;
+    }
+
+    return ans;
+}
+
 int main()
 {
     //Segment tree Tree representation using a 1D array:
@@ -101,6 +161,8 @@ int main()
     //std::vector<int> array = {5, 8, 6};
     
     std::cout << "Sum " << calcSum(buildSegmentTreeSum(array), 1, 3) << endl;
+
+    printSequence(buildSegmentTreeMin(array));
     
     int n = 2, k = 3, f = 7, z = 1;
     std::cout << "Division test " << endl << 
@@ -115,7 +177,12 @@ int main()
     "7 % 2 = " << f % 2 << endl <<
     "1 % 2 = " << z % 2 << endl;
     
-    printSequence(buildSegmentTreeSum(array));
+    auto segmentTreeMin = buildSegmentTreeMin(array);
+    printSequence(segmentTreeMin);
+
+    std::cout << "Minimum global " << queryRangeMinimumSegmentTree(segmentTreeMin, 0, 7) << endl;
+    std::cout << "Minimum 1-3 " << queryRangeMinimumSegmentTree(segmentTreeMin, 1, 3) << endl;
+    std::cout << "Minimum 0-2 " << queryRangeMinimumSegmentTree(segmentTreeMin, 0, 2) << endl;
     
     //~~~Randomized test~~~
     std::cout << "Perform a randomized full test ? (y/n)\n";
@@ -140,15 +207,17 @@ int main()
         for (auto & it : items)
             it = distr(gen);
 
+        auto segmentTree = buildSegmentTreeSum(items);
+
         //Make a bunch of queries        
-	for (int mq = 0; mq < 100; mq++)
+	    for (int mq = 0; mq < 100; mq++)
         {
             //Generate random from - to
             int rFrom = indexDistr(gen);
             int rTo = indexDistr(gen);
             if (rTo < rFrom) std::swap(rFrom, rTo);
-            int sumTrue = 0;//rangeSumQueryDumb(items, rFrom, rTo);
-            int sumTest = 0;//rangeSumQuerySmart(fenwickTree, rFrom, rTo);
+            int sumTrue = rangeSumQueryDumb(items, rFrom, rTo);
+            int sumTest = calcSum(segmentTree, rFrom, rTo);
             if (sumTrue != sumTest)
             {
                 std::cout << "Failed test ";
