@@ -152,7 +152,6 @@ int lis_nlogn2(const std::vector<int>& sequence, bool debug)
 {
     //Since we're using dynamic programming, calculate answers iteratively by moving left-right
     //We need to find previous length that is largest but the linked value is smaller than x
-    std::vector<int> lengths(sequence.size(), 1);
 
     struct Cmp {
         bool operator()(const int& lhs, const int& rhs) const { return lhs > rhs; }
@@ -164,7 +163,7 @@ int lis_nlogn2(const std::vector<int>& sequence, bool debug)
 
     int maxlen = 0;
 
-    for (int i = 1; i < (int)lengths.size(); i++)
+    for (int i = 1; i < (int)sequence.size(); i++)
     {
         dbgprint(debug, entries);
         //The solution is an optimization of the DP solution, based on two observations:
