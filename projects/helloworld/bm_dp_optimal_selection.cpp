@@ -39,7 +39,7 @@ void printSequence(const T& sequence)
 
 int optimal(const std::vector<std::vector<int>>& prices)
 {
-    
+    return 0;   
 }
 
 int main()
@@ -51,4 +51,12 @@ int main()
         {5, 3, 9, 7, 3, 5, 1, 4}
     };
     
+    auto sortedPrices = prices;
+    for (auto & it : sortedPrices)
+        std::sort(it.begin(), it.end());
+       
+    for (auto & it : sortedPrices)
+        printSequence(it);
+
+    return 0;
 }
