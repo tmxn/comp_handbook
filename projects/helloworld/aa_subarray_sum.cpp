@@ -137,4 +137,6 @@ int main()
     std::cout << two_sum(array_2, 12) << endl;
 
     std::cout << three_sum(array_2, 24) << endl;
+
+    return 0;
 }
